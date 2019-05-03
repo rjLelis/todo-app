@@ -20,10 +20,11 @@ def create_and_list_todo(request):
 
 @api_view(['GET', 'DELETE', 'PUT'])
 def get_delete_update_todo(request, todo_id):
-    todo = Todo.objects.get(id=todo_id)
-    if todo is None:
+    try:
+        todo = Todo.objects.get(id=todo_id)
+    except Todo.DoesNotExist:
         return Response({'message': f'Todo not found with id {todo_id}'}, status=status.HTTP_404_NOT_FOUND)
-    elif request.method == 'GET':
+    if request.method == 'GET':
         todo_serializer = TodoSerializer(todo)
         return Response(todo_serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
