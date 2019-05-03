@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import create_and_list_todo
+from . import views
 
 app_name = 'todo'
 
 urlpatterns = [
-    path('todo', create_and_list_todo, name='create-or-list')
+    path('todo/', views.create_and_list_todo, name='create-or-list'),
+    path('todo/<int:todo_id>', views.get_delete_update_todo, name='get-delete-update')
 ]
