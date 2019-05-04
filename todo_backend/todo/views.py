@@ -9,7 +9,10 @@ from .models import Todo
 @api_view(['GET', 'POST'])
 def create_and_list_todo(request):
     if request.method == 'POST':
-        todo = Todo(title=request.data['title'], description=request.data['description'])
+        title = request.data['title']
+        description = request.data['description']
+        done = request.data['done']
+        todo = Todo(title=title, description=description, done=done)
         todo.save()
         todo_serializer = TodoSerializer(todo)
         return Response(todo_serializer.data, status=status.HTTP_201_CREATED)
@@ -31,8 +34,12 @@ def get_delete_update_todo(request, todo_id):
         todo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     else:
-        todo.title = request.data['title']
-        todo.description = request.data['description']
-        todo.save()
-        todo_serializer = TodoSerializer(todo)
-        return Response(todo_serializer.data, status=status.HTTP_200_OK)
+        try:
+            todo.title = request.data['title']
+            todo.description = request.data['description']
+            todo.done = request.data['done']
+            todo.save()
+            todo_serializer = TodoSerializer(todo)
+            return Response(todo_serializer.data, status=status.HTTP_200_OK)
+        except KeyError:
+            return Response({'message': 'All parameters of the todo must be sent in order to update it'})
