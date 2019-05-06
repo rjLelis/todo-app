@@ -31,8 +31,9 @@ def get_delete_update_todo(request, todo_id):
         todo_serializer = TodoSerializer(todo)
         return Response(todo_serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
+        message = f'The todo "{todo.title}" has been deleted'
         todo.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data={'message': message}, status=status.HTTP_204_NO_CONTENT)
     else:
         try:
             todo.title = request.data['title']
@@ -52,6 +53,6 @@ def finish_todo(request, todo_id):
         todo.done = True
         todo.save()
         todo_serializer = TodoSerializer(todo)
-        return Response(data={'todo': todo_serializer.data, 'message': f'the todo "{todo.title}" has been finished'}, status=status.HTTP_200_OK)
+        return Response(data={'todo': todo_serializer.data, 'message': f'The todo "{todo.title}" has been finished'}, status=status.HTTP_200_OK)
     except Todo.DoesNotExist:
         return Response({'message': f'Todo not found with id {todo_id}'}, status=status.HTTP_404_NOT_FOUND)
