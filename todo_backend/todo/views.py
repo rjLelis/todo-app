@@ -42,4 +42,16 @@ def get_delete_update_todo(request, todo_id):
             todo_serializer = TodoSerializer(todo)
             return Response(todo_serializer.data, status=status.HTTP_200_OK)
         except KeyError:
-            return Response({'message': 'All parameters of the todo must be sent in order to update it'})
+            return Response({'message': 'All parameters of the todo must be sent in order to update the todo'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+def finish_todo(request, todo_id):
+    try:
+        todo = Todo.objects.get(id=todo_id)
+        todo.done = True
+        todo.save()
+        todo_serializer = TodoSerializer(todo)
+        return Response(data={'todo': todo_serializer.data, 'message': f'the todo "{todo.title}" has been finished'}, status=status.HTTP_200_OK)
+    except Todo.DoesNotExist:
+        return Response({'message': f'Todo not found with id {todo_id}'}, status=status.HTTP_404_NOT_FOUND)
