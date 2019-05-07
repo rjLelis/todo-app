@@ -1,44 +1,38 @@
 import React from 'react';
 import logo from './logo.svg';
+import Table from './components/Table';
 import './App.css';
 
 class App extends React.Component {
 
   state ={
-    title: '',
-    description: ''
+    todos: [],
+    loading: true,
+    message: 'Loading...'
   }
 
   componentDidMount() {
     
-    fetch(`http://localhost:8080/api/todo/1`,
+    fetch(`http://localhost:8080/api/todo/`,
     {
       method: 'GET',
       headers: new Headers({'Content-type': 'application/json'})
     }).then(response => {
-      if(response.status !== 200){
-        return response.message
-      }
-      return response.json()
-    }).then(data => this.setState({title: data.title, description: data.description})
-    )
+        if(response.status !== 200){
+          return this.setState({message: response.message});
+        }
+        return response.json()
+      }).then(data => this.setState({todos: data, loading: false})
+    );
   }
 
 
   render() {
-    const {title, description} = this.state
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            {title}
-          </p>
-          <p>
-            {description}
-          </p>
-        </header>
-      </div>
+    const {todos, loading, message} = this.state;
+    return loading ? (<p>{message}</p>) :
+      (todos.map(todo => 
+        <Table key={todo.id} data={todo}/>
+      )
     );
   }
 }
