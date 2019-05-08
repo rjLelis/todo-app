@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Table = ({data}) => (
+const Table = (props) => (
     <table>
         <thead>
             <tr>
@@ -10,17 +10,20 @@ const Table = ({data}) => (
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    {data.title}
-                </td>
-                <td>
-                    {data.description}
-                </td>
-                <td>
-                    {!data.done ? <button>Finish</button> : 'DONE'}
-                </td>
-            </tr>
+            {props.data.map(todo => (
+                <tr key={todo.id}>
+                    <td>
+                        {todo.title}
+                    </td>
+                    <td>
+                        {todo.description}
+                    </td>
+                    <td>
+                        {!todo.done ? <button onClick={() => props.onClick(todo.id)}>Finish</button> : 'DONE'}
+                    </td>
+                </tr>
+            ))}
+            
         </tbody>
     </table>
 );

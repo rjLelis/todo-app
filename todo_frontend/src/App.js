@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+import conf from './api.config'
 import Table from './components/Table';
 import './App.css';
 
@@ -13,11 +13,7 @@ class App extends React.Component {
 
   componentDidMount() {
     
-    fetch(`http://localhost:8080/api/todo/`,
-    {
-      method: 'GET',
-      headers: new Headers({'Content-type': 'application/json'})
-    }).then(response => {
+    fetch(`http://localhost:8080/api/todo/`, conf.GET).then(response => {
         if(response.status !== 200){
           return this.setState({message: response.message});
         }
@@ -26,14 +22,27 @@ class App extends React.Component {
     );
   }
 
+  handleClick(todoId) {
+    fetch(`http://localhost:8080/api/todo/${todoId}/finish`, conf.PUT).then(response => {
+      if(response.status !== 200) {
+          return this.setState({loading: false, message:'Something went wrong with the server'});
+      }
+      return (fetch('http://localhost:8080/api/todo/', conf.GET).then(response => {
+        if(response.status !== 200){
+          return this.setState({loading: false, message: 'Something went wrong with the server'});
+        }
+        return response.json();
+      })
+        ).then(data => {
+          this.setState({todos:data});
+        }
+      );
+    })
+  }
 
   render() {
-    const {todos, loading, message} = this.state;
-    return loading ? (<p>{message}</p>) :
-      (todos.map(todo => 
-        <Table key={todo.id} data={todo}/>
-      )
-    );
+    return this.state.loading ? (<p>{this.state.message}</p>) :
+      (<Table data={this.state.todos} onClick={i => this.handleClick(i)}/>);
   }
 }
 
