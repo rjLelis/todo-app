@@ -23,8 +23,10 @@ const Table = (props) => (
                     </td>
                 </tr>
             ))}
-            
         </tbody>
+        <tfoot>
+            <p>{props.data.length} todos</p>
+        </tfoot>
     </table>
 );
 
