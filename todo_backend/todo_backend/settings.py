@@ -54,6 +54,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+CORS_ALLOW_METHODS = (
+    'POST',
+    'GET',
+    'PUT',
+    'DELETE',
+)
+
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000/'
 )
