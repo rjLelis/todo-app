@@ -1,5 +1,5 @@
 import React from 'react';
-import conf from './api.config'
+import config from './api.config'
 import Table from './components/Table';
 import './App.css';
 
@@ -13,7 +13,7 @@ class App extends React.Component {
 
   componentDidMount() {
     
-    fetch(`http://localhost:8080/api/todo/`, conf.GET).then(response => {
+    fetch(config.defaultEndpoint, config.GET).then(response => {
         if(response.status !== 200){
           return this.setState({message: response.message});
         }
@@ -23,11 +23,11 @@ class App extends React.Component {
   }
 
   handleClick(todoId) {
-    fetch(`http://localhost:8080/api/todo/${todoId}/finish`, conf.PUT).then(response => {
+    fetch(`${config.defaultEndpoint}${todoId}/finish`, config.PUT).then(response => {
       if(response.status !== 200) {
           return this.setState({loading: false, message:'Something went wrong with the server'});
       }
-      return (fetch('http://localhost:8080/api/todo/', conf.GET).then(response => {
+      return (fetch(config.defaultEndpoint, config.GET).then(response => {
         if(response.status !== 200){
           return this.setState({loading: false, message: 'Something went wrong with the server'});
         }

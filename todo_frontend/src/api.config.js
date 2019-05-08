@@ -1,7 +1,8 @@
 
 const defaultHeader = new Headers({'Content-type': 'application/json'});
 
-const conf = {
+const config = {
+    defaultEndpoint: 'http://localhost:8080/api/todo/',
     GET: {
         method: 'GET',
         headers: defaultHeader,
@@ -20,4 +21,4 @@ const conf = {
     },
 };
 
-export default conf;
+export default config;
