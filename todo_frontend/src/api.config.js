@@ -3,21 +3,30 @@ const defaultHeader = new Headers({'Content-type': 'application/json'});
 
 const config = {
     defaultEndpoint: 'http://localhost:8080/api/todo/',
-    GET: {
-        method: 'GET',
-        headers: defaultHeader,
+    GET: () => {
+        return {
+            method: 'GET',
+            headers: defaultHeader,
+        }
     },
-    POST: {
-        method: 'POST',
-        headers: defaultHeader,
+    POST: item => {
+        return {
+            method: 'POST',
+            body: JSON.stringify(item),
+            headers: defaultHeader,
+        }
     },
-    DELETE: {
-        method: 'DELETE',
-        headers: defaultHeader,
+    DELETE: () => {
+        return {
+            method: 'DELETE',
+            headers: defaultHeader,
+        }
     },
-    PUT: {
-        method: 'PUT',
-        headers: defaultHeader,
+    PUT: () => {
+        return {
+            method: 'PUT',
+            headers: defaultHeader,
+        }
     },
 };
 
