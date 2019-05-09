@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const Table = (props) => (
+const Table = props => (
     <table>
         <thead>
             <tr>

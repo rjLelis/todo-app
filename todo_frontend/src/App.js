@@ -13,29 +13,43 @@ class App extends React.Component {
 
   componentDidMount() {
     
-    fetch(config.defaultEndpoint, config.GET).then(response => {
+    fetch(config.defaultEndpoint, config.GET()).then(response => {
         if(response.status !== 200){
-          return this.setState({message: response.message});
+          return this.setState({message: 'Something went wrong with the server'});
         }
         return response.json()
       }).then(data => this.setState({todos: data, loading: false})
     );
   }
 
-  handleClick(todoId) {
-    fetch(`${config.defaultEndpoint}${todoId}/finish`, config.PUT).then(response => {
+  handleClick = todoId => {
+    fetch(`${config.defaultEndpoint}${todoId}/finish`, config.PUT()).then(response => {
       if(response.status !== 200) {
-          return this.setState({loading: false, message:'Something went wrong with the server'});
+          return this.setState({loading: true, message: response.message});
       }
       return (fetch(config.defaultEndpoint, config.GET).then(response => {
         if(response.status !== 200){
-          return this.setState({loading: false, message: 'Something went wrong with the server'});
+          return this.setState({loading: true, message: 'Something went wrong with the server'});
         }
         return response.json();
       })
-        ).then(data => {
-          this.setState({todos:data});
+        ).then(data => {this.setState({todos:data, loading: false, message: ''});
         }
+      );
+    })
+  }
+
+  handleSubmit = newTodo => {
+    fetch(`${config.defaultEndpoint}`, config.POST(newTodo)).then(response => {
+      if(response.status !== 200) {
+        return this.setState({loading: true, message: response.message});
+      }
+      return (fetch(config.defaultEndpoint, config.GET()).then(response => {
+        if(response.status !== 200) {
+          return this.setState({loading: true, message: 'Something went wrong with the server'})
+        }
+        return response.json();
+      }).then(data => this.setState({todos: data, loading: false, message: ''}))
       );
     })
   }
