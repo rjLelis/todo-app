@@ -2,11 +2,12 @@ import React from 'react';
 
 
 const Table = props => (
-    <table>
-        <thead>
+    <table className='table'>
+        <thead className="thead-dark">
             <tr>
-                <th>Title</th>
-                <th>Description</th>
+                <th scope='col'>Title</th>
+                <th scope='col'>Description</th>
+                <th scope='col'></th>
             </tr>
         </thead>
         <tbody>
@@ -18,7 +19,7 @@ const Table = props => (
                     <td>
                         {todo.description}
                     </td>
-                    <td>
+                    <td className={!todo.done ? '' : 'alert-success'}>
                         {!todo.done ? <button onClick={() => props.onClick(todo.id)}>Finish</button> : 'DONE'}
                     </td>
                 </tr>
