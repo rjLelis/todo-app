@@ -31,21 +31,18 @@ def create_todo(todo):
     except KeyError:
         error = {'error_message':'The todo title must be provided', 'status': status.HTTP_400_BAD_REQUEST}
         return False, error
-        raise ValueError()
 
+    try:
+        description = todo['description']
+
+    except KeyError:
+        description = ''
+    
     finally:
-        try:
-            description = todo['description']
-
-        except KeyError:
-            description = ''
-        
-        finally:
-            done = False
-            new_todo = Todo(title=title, description=description, done=done)
-            new_todo.save()
-            new_todo_serialized = TodoSerializer(new_todo)
-            return True, {'todo': new_todo_serialized.data, 'status': status.HTTP_201_CREATED}
+        new_todo = Todo(title=title, description=description, done=False)
+        new_todo.save()
+        new_todo_serialized = TodoSerializer(new_todo)
+        return True, {'todo': new_todo_serialized.data, 'status': status.HTTP_201_CREATED}
 
 
 def update_todo(todo_id, todo_update):
@@ -65,18 +62,17 @@ def update_todo(todo_id, todo_update):
         error = {'error_message': f'Todo not found with id {todo_id}', 'status': status.HTTP_404_NOT_FOUND}
         return False, error
 
+    try:
+        todo.description = todo_update['description']
+        todo.done = todo_update['done']
+
+    except KeyError:
+        pass
+
     finally:
-        try:
-            todo.description = todo_update['description']
-            todo.done = todo_update['done']
-
-        except KeyError:
-            pass
-
-        finally:
-            todo.save()
-            todo_serialized = TodoSerializer(todo)
-            return True, {'todo': todo_serialized.data, 'status': status.HTTP_200_OK}
+        todo.save()
+        todo_serialized = TodoSerializer(todo)
+        return True, {'todo': todo_serialized.data, 'status': status.HTTP_200_OK}
 
 
 def delete_todo_by_id(todo_id):
