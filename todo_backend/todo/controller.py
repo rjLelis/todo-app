@@ -4,6 +4,7 @@ from rest_framework import status
 
 
 def get_all_todos():
+
     todos = Todo.objects.all()
     todos_serialized = TodoSerializer(todos, many=True)
     return {
@@ -13,6 +14,7 @@ def get_all_todos():
 
 
 def get_todo_by_id(todo_id):
+
     try:
         todo = Todo.objects.get(id=todo_id)
         todo_serialized = TodoSerializer(todo)
@@ -41,6 +43,7 @@ def get_todo_by_id(todo_id):
 
 
 def create_todo(todo):
+
     try:
         title = todo['title'].strip()
         if not title:
@@ -51,6 +54,7 @@ def create_todo(todo):
                 'status': status.HTTP_400_BAD_REQUEST
             }
             return error
+
     except KeyError:
         error = {
             'data': {
@@ -77,6 +81,7 @@ def create_todo(todo):
 
 
 def update_todo(todo_id, todo_update):
+
     try:
         todo = Todo.objects.get(id=todo_id)
         todo.title = todo_update['title']
@@ -125,8 +130,10 @@ def update_todo(todo_id, todo_update):
 
 
 def delete_todo_by_id(todo_id):
+
     try:
         todo = Todo.objects.get(id=todo_id)
+
     except TypeError:
         error = {
             'data':{
@@ -135,6 +142,7 @@ def delete_todo_by_id(todo_id):
             'status': status.HTTP_400_BAD_REQUEST
             }
         return error
+
     except Todo.DoesNotExist:
         error = {
             'data': {
@@ -143,6 +151,7 @@ def delete_todo_by_id(todo_id):
             'status': status.HTTP_404_NOT_FOUND
             }
         return error
+
     finally:
         title = todo.title
         todo.delete()
@@ -155,6 +164,7 @@ def delete_todo_by_id(todo_id):
 
 
 def finish_todo(todo_id):
+    
     try:
         todo = Todo.objects.get(id=todo_id)
         if todo.done:
@@ -165,6 +175,7 @@ def finish_todo(todo_id):
                 'status': status.HTTP_304_NOT_MODIFIED
                 }
             return error
+
         else:
             todo.done = True
             todo.save()
@@ -174,6 +185,7 @@ def finish_todo(todo_id):
                     }, 
                 'status': status.HTTP_200_OK
                 }
+
     except TypeError:
         error = {
             'data':{
@@ -182,6 +194,7 @@ def finish_todo(todo_id):
             'status': status.HTTP_400_BAD_REQUEST
             }
         return error
+
     except Todo.TodoDoesNotExist:
         error = {
             'data': {
