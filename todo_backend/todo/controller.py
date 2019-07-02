@@ -63,54 +63,37 @@ def create_todo(todo):
     }
 
 
-
 def update_todo(todo_id, new_todo):
-
+    
     try:
         todo = Todo.objects.get(id=todo_id)
-        todo.title = new_todo['title']
+        todo.title = new_todo['title'].strip() if 'title' in new_todo else todo.title
+        todo.description = new_todo['description'] if 'description' in new_todo else todo.description
+        todo.done = new_todo['done'] if 'done' in new_todo else todo.done
 
-    except KeyError:
-        error = {
-            'data':{
-                'message':'The todo title must be provided'
-                }, 
-            'status': status.HTTP_400_BAD_REQUEST
-            }
-        return error
-
-    except TypeError:
-        error = {
-            'data':{
-                'message':'The todo id must be provided'
-                }, 
-            'status': status.HTTP_400_BAD_REQUEST
-            }
-        return error
-
-    except Todo.DoesNotExist:
-        error = {
-            'data': {
-                'message':f'Todo not found with id {todo_id}'
-                }, 
-            'status': status.HTTP_404_NOT_FOUND
-            }
-        return error
-
-    try:
-        todo.description = new_todo['description']
-        todo.done = new_todo['done']
-
-    except KeyError:
-        pass
-
-    finally:
-        todo.save()
-        todo_serialized = TodoSerializer(todo)
-        return {
-                'data': todo_serialized.data, 
+        if todo.title.strip():
+            todo.save()
+            todo_serialized = TodoSerializer(todo)
+            return {
+                'data': todo_serialized.data,
                 'status': status.HTTP_200_OK
-                }
+            }
+
+        else:
+            return {
+                'data': {
+                    'message': 'The title must not be empty',
+                },
+                'status': status.HTTP_400_BAD_REQUEST
+            }
+        
+    except Todo.DoesNotExist:
+        return {
+            'data': {
+                'message': f'Todo not found with id {todo_id}',
+            },
+            'status': status.HTTP_404_NOT_FOUND
+        }
 
 
 def delete_todo_by_id(todo_id):
@@ -121,28 +104,26 @@ def delete_todo_by_id(todo_id):
         todo.delete()
         return {
             'data': {
-                'message':f'The todo "{title}" has been deleted'
+                'message': f'The todo "{title}" has been deleted'
                 }, 
-            'status':status.HTTP_204_NO_CONTENT
+            'status': status.HTTP_204_NO_CONTENT
             }
 
     except TypeError:
-        error = {
-            'data':{
+        return {
+            'data': {
                 'message':'The todo id must be provided'
                 }, 
             'status': status.HTTP_400_BAD_REQUEST
             }
-        return error
 
     except Todo.DoesNotExist:
-        error = {
+        return {
             'data': {
                 'message':f'Todo not found with id {todo_id}'
                 }, 
             'status': status.HTTP_404_NOT_FOUND
             }
-        return error
         
 
 def finish_todo(todo_id):
