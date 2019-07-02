@@ -10,7 +10,7 @@ class TodoControllerTestCase(TestCase):
         todo = {
             'description': 'Todo description to fail',
         }
-        new_todo = todo_controller.create_todo2(todo)
+        new_todo = todo_controller.create_todo(todo)
         self.assertEqual(new_todo['status'], status.HTTP_400_BAD_REQUEST)
 
 
@@ -20,7 +20,7 @@ class TodoControllerTestCase(TestCase):
             'description': 'Test description'
         }
 
-        new_todo = todo_controller.create_todo2(todo)
+        new_todo = todo_controller.create_todo(todo)
         self.assertEquals(new_todo['status'], status.HTTP_400_BAD_REQUEST)
 
     
@@ -28,7 +28,7 @@ class TodoControllerTestCase(TestCase):
         todo = {
             'title': 'Test todo title'
         }
-        new_todo = todo_controller.create_todo2(todo)
+        new_todo = todo_controller.create_todo(todo)
         self.assertEquals(new_todo['status'], status.HTTP_201_CREATED)
 
     def test_create_todo_done_equals_true(self):
@@ -37,5 +37,5 @@ class TodoControllerTestCase(TestCase):
             'done': True
         }
 
-        new_todo = todo_controller.create_todo2(todo)
+        new_todo = todo_controller.create_todo(todo)
         self.assertEqual(new_todo['data']['done'], False)

@@ -32,7 +32,7 @@ def get_todo_by_id(todo_id):
         }
 
 
-def create_todo2(todo):
+def create_todo(todo):
 
     if 'title' not in todo:
         return {
@@ -62,43 +62,6 @@ def create_todo2(todo):
         'status': status.HTTP_201_CREATED
     }
 
-
-def create_todo(todo):
-
-    try:
-        title = todo['title'].strip()
-        if not title:
-            error = {
-                'data': {
-                    'message': 'The title must not be empty'
-                    },
-                'status': status.HTTP_400_BAD_REQUEST
-            }
-            return error
-
-    except KeyError:
-        error = {
-            'data': {
-                'message':'The todo title must be provided'
-                },
-            'status': status.HTTP_400_BAD_REQUEST
-         }
-        return error
-
-    try:
-        description = todo['description']
-
-    except KeyError:
-        description = ''
-    
-    finally:
-        new_todo = Todo(title=title, description=description, done=False)
-        new_todo.save()
-        new_todo_serialized = TodoSerializer(new_todo)
-        return {
-                'data': new_todo_serialized.data, 
-                'status': status.HTTP_201_CREATED
-                }
 
 
 def update_todo(todo_id, new_todo):
